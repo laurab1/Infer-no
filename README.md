@@ -15,4 +15,9 @@ Bemnchmark suite for infer Quandary
 
 ## Print the results
 
-python confusion_builder.py  
+If you want to generate and print the confusion matrix into your terminal use:
+
+`python confusion_builder.py `
+
+For each benchmark csv result file placed into `csv/actual` this script will generate a matrix.
+Note that the csv file must match the structure of the official OWASP `expectedresults-1.2.csv`
