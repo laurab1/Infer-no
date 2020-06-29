@@ -1,7 +1,6 @@
 class ConfusionMatrix:
-    # test name, category, real vulnerability, cwe, Benchmark version: 1.2, 2016-06-1
-    actual_csv: []
-    expected_csv: []
+    # Confusion matrix generated from expected behaviour csv and actual behaviour csv
+    # csv format: test name, category, real vulnerability, cwe, Benchmark version: 1.2, 2016-06-1
 
     def __init__(self, actual_csv, expected_csv):
         self.TP = 0
