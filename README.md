@@ -11,7 +11,8 @@ Bemnchmark suite for infer Quandary
 
 ## Run the benchmark 
 
-### TODO
+You can run Infer quandary against all the tests by using the following command:
+`python run_tests.py `
 
 ## Print the results
 
