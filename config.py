@@ -1,2 +1,4 @@
 CSV_EXPECTED_FILE_PATH = "csv/expected/expectedresults-1.2.csv"
 CSV_ACTUAL_FOLDER_PATH = "csv/actual"
+CSV_ACTUAL_TP_NUMBER = 1415
+CSV_ACTUAL_TN_NUMBER = 1325
