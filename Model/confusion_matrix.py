@@ -1,5 +1,6 @@
-from config import CSV_ACTUAL_TN_NUMBER,CSV_ACTUAL_TP_NUMBER
+from config import CSV_ACTUAL_TN_NUMBER, CSV_ACTUAL_TP_NUMBER
 from texttable import Texttable
+
 
 class ConfusionMatrix:
     # Confusion matrix generated from expected behaviour csv and actual behaviour csv
@@ -20,9 +21,16 @@ class ConfusionMatrix:
         self.FN_list = []
         self.actual_csv = actual_csv
         self.expected_csv = expected_csv
+        self.fn_error_rank = []
+        self.fp_error_rank = []
+        self.vulnerability_tested_counter = {}
         self._compute()
 
     def _compute(self):
+        self._confusion_matrix_build()
+        self._classification_build()
+
+    def _confusion_matrix_build(self):
         # cmpute the confusion matrix
         assert len(self.actual_csv) == len(self.expected_csv)
         for i, row_actual in enumerate(self.actual_csv):
@@ -35,28 +43,83 @@ class ConfusionMatrix:
                 expected = row_expected[2].lower()
                 actual = row_actual[2].lower()
 
+                vuln_name = row_expected[1]
+                if vuln_name in self.vulnerability_tested_counter:
+                    self.vulnerability_tested_counter[vuln_name] = self.vulnerability_tested_counter[vuln_name] + 1
+                else:
+                    self.vulnerability_tested_counter[vuln_name] = 1
+
                 # true=true => TP
                 if expected == 'true' and actual == 'true':
                     self.TP = self.TP + 1
-                    self.TP_list.append(test_name_expected)
+                    self.TP_list.append(row_expected)
                 # true=false => FN
                 elif expected == 'true' and actual == 'false':
                     self.FN = self.FN + 1
-                    self.FN_list.append(test_name_expected)
+                    self.FN_list.append(row_expected)
                 # false=true => FP
                 elif expected == 'false' and actual == 'true':
                     self.FP = self.FP + 1
-                    self.FP_list.append(test_name_expected)
+                    self.FP_list.append(row_expected)
                 # false=false => TN
                 elif expected == 'false' and actual == 'false':
                     self.TN = self.TN + 1
-                    self.TN_list.append(test_name_expected)
-        self.TPR = self.TP/self.tp_number
-        self.FPR = self.FP/self.tn_number
+                    self.TN_list.append(row_expected)
+
+        self.TPR = self.TP / self.tp_number
+        self.FPR = self.FP / self.tn_number
+
+    def _classification_build(self):
+        # build misclassification statistics
+        fn_ledger = {}
+        fp_ledger = {}
+
+        for elem in self.FN_list:
+            vuln_name = elem[1]
+            if vuln_name in fn_ledger:
+                fn_ledger[vuln_name] = fn_ledger[vuln_name] + 1
+            else:
+                fn_ledger[vuln_name] = 1
+
+        for elem in self.FP_list:
+            vuln_name = elem[1]
+            if vuln_name in fp_ledger:
+                fp_ledger[vuln_name] = fp_ledger[vuln_name] + 1
+            else:
+                fp_ledger[vuln_name] = 1
+
+        # sort items by value
+        def percentage(name, val):
+            return val * 100 / self.vulnerability_tested_counter[name]
+
+        self.fn_error_rank = {k: [percentage(k, v),v] for k, v in
+                              sorted(fn_ledger.items(), key=lambda item: percentage(item[0], item[1]), reverse=True)}
+        self.fp_error_rank = {k: [percentage(k, v),v] for k, v in
+                              sorted(fp_ledger.items(), key=lambda item: percentage(item[0], item[1]), reverse=True)}
 
     def pretty_print(self):
-        # print the confusion matrix on std_out
-        print('\n Results: \n')
+        # print the confusion matrix and statistics on std_out
+        print('\nResults: \n')
+
+        print('Top 3 False Negative misclassification by Vulnerability type')
+        fn_iter = iter(self.fn_error_rank)
+        t = Texttable()
+        t.add_rows([['Vulnerability name', 'Relative Incorrect classification %', 'Absolute Incorrect classification %']])
+        for i in range(3):
+            k = next(fn_iter)
+            t.add_row([k, self.fn_error_rank[k][0], self.fn_error_rank[k][1]*100/self.FN])
+        print(t.draw())
+
+        print('\nTop 3 False Positive misclassification by Vulnerability type')
+        fp_iter = iter(self.fp_error_rank)
+        t = Texttable()
+        t.add_rows([['Vulnerability name', 'Incorrect classification %', 'Absolute Incorrect classification %']])
+        for i in range(3):
+            k = next(fp_iter)
+            t.add_row([k, self.fp_error_rank[k][0], self.fp_error_rank[k][1]*100/self.FP])
+        print(t.draw())
+
+        print('\nConfusion Matrix')
         t = Texttable()
         t.add_rows([['', 'Positive', 'Negative'],
                     ['Total Population', self.tp_number, self.tn_number]])
@@ -67,15 +130,13 @@ class ConfusionMatrix:
                     ['Predicted \nCondition \nNegative', self.FN, self.TN]])
         print(t.draw())
 
-        sensitivity=self.TPR
-        specificity=1-self.FPR
-        youden_index=sensitivity+specificity-1
+        sensitivity = self.TPR
+        specificity = 1 - self.FPR
+        youden_index = sensitivity + specificity - 1
 
         # Final score = Youden Index * 100
         t = Texttable()
-        t.add_rows([['Final Score: ', youden_index*100],
+        t.add_rows([['Final Score: ', youden_index * 100],
                     ['Sensitivity: ', sensitivity],
                     ['Specificity: ', specificity]])
         print(t.draw())
-
-

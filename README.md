@@ -27,6 +27,13 @@ If you want to generate and print the confusion matrix into your terminal use:
 
 `python confusion_builder.py `
 
+For each .csv file inside scv/actual the script will print:
+
+- The confusion matrix 
+- Top 3 False Positive/False Negative misclassification errors by vulnerability category. 
+    - The relative incorrect classification % represents the misclassification error percentage with respect to the total number of tests for that vulnerability type.
+    - The absolute incorrect classification % represents the misclassification error percentage with respect to the total False Positive, False Negative number. 
+
 For each benchmark csv result file placed into `csv/actual` this script will generate a matrix.
 Note that the csv file must match the structure of the official OWASP `expectedresults-1.2.csv`
 
