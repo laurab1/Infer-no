@@ -32,4 +32,4 @@ Note that the csv file must match the structure of the official OWASP `expectedr
 
 ## Setup an infer configuration
 
-Is possible to tune the infer quandary configuration modifying the file [.inferconfig](https://github.com/laurab1/Infer-no/blob/master/testcode/.inferconfig)
+Is possible to tune the infer quandary configuration modifying the file [.inferconfig](https://github.com/laurab1/Infer-no/blob/master/benchmark/.inferconfig)
