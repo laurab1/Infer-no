@@ -32,8 +32,8 @@ class ConfusionMatrix:
 
             # if test names are the same
             if test_name_actual == test_name_expected:
-                expected = row_expected[2]
-                actual = row_actual[2]
+                expected = row_expected[2].lower()
+                actual = row_actual[2].lower()
 
                 # true=true => TP
                 if expected == 'true' and actual == 'true':
