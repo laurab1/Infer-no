@@ -1,6 +1,8 @@
 from contextlib import contextmanager
 import os
-import json
+from os import listdir
+from os.path import isfile, join
+import csv
 
 @contextmanager
 def cd(newdir):
@@ -30,6 +32,20 @@ def parse_results(path):
             f.close()
         except Exception:
             print("cannot access the report file")
-    for item in results.items():
-        print(item)
     return results
+
+def fill_csv(path, results):
+    testpath = os.getcwd() + "/testcode"
+    out = [f for f in listdir(testpath) if (isfile(join(testpath, f)) and f.split('.')[1] == 'java')]
+    out.sort()
+    with cd(os.getcwd() + path):
+        try:
+            with open('actual.csv', mode='w') as actual_results:
+                res_writer = csv.writer(actual_results, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+                for item in out:
+                    found = True if item in results else False
+                    res_writer.writerow([item.split('.')[0], "a_string", found, 0])
+            return
+        except Exception:
+            print("cannot access the csv file")
+    return

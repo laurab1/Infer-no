@@ -1,6 +1,6 @@
 from contextlib import contextmanager
 from parser import cd
-from parser import parse_results
+from parser import parse_results, fill_csv
 import os
 import subprocess
 import logging
@@ -12,7 +12,8 @@ def main():
         except Exception:
             print("cannot enter dir")
             return
-    results = parse_results("/infer-out")
+        results = parse_results("/infer-out")
+    fill_csv("/csv/actual", results)
     return
 
 if __name__ == '__main__':
