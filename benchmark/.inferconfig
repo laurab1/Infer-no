@@ -1,0 +1,55 @@
+{
+  "quandary-sources": [
+    {
+      "procedure": "javax.servlet.http.Cookie*",
+      "kind": "PrivateData"
+    },
+    {
+      "procedure": "javax.servlet.http.HttpServletRequest*",
+      "kind": "PrivateData"
+    }
+  ],
+  "quandary-sinks": [
+    {
+      "procedure": "java.io.FileInputStream",
+      "kind": "Other"
+    },
+    {
+      "procedure": "java.io.File",
+      "kind": "Other"
+    },
+    {
+      "procedure": "java.io.FileOutputStream",
+      "kind": "Other"
+    },
+    {
+      "procedure": "*query*",
+      "kind": "Other"
+    },
+    {
+      "procedure": "*search*",
+      "kind": "Other"
+    },
+    {
+      "procedure": "org.owasp.benchmark.helpers*",
+      "kind": "Other"
+    }
+  ],
+  "quandary-sanitizers": [
+    {
+      "procedure": "java.security*",
+      "kind": "Other"
+    },
+    {
+      "procedure": "org.owasp.esapi.ESAPI.encoder*",
+      "kind": "Other"
+    },
+    {
+      "procedure": "org.owasp.esapi.ESAPI.decoder*",
+      "kind": "Other"
+    }
+  ],
+  "quandary-endpoints": [
+    "java.io*"
+  ]
+}

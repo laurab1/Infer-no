@@ -2,7 +2,9 @@ from contextlib import contextmanager
 import os
 from os import listdir
 from os.path import isfile, join
+from config import *
 import csv
+
 
 @contextmanager
 def cd(newdir):
@@ -13,9 +15,10 @@ def cd(newdir):
     finally:
         os.chdir(prevdir)
 
+
 def parse_results(path):
     results = {}
-    with cd(os.getcwd() + path):
+    with cd(os.path.join(os.getcwd(), path)):
         try:
             with open("report.txt", 'r') as f:
                 for line in f:
@@ -34,11 +37,12 @@ def parse_results(path):
             print("cannot access the report file")
     return results
 
+
 def fill_csv(path, results):
-    testpath = os.getcwd() + "/testcode"
+    testpath = os.path.join(os.getcwd(), TEST_SOURCE_FILES)
     out = [f for f in listdir(testpath) if (isfile(join(testpath, f)) and f.split('.')[1] == 'java')]
     out.sort()
-    with cd(os.getcwd() + path):
+    with cd(os.path.join(os.getcwd(), path)):
         try:
             with open('actual.csv', mode='w') as actual_results:
                 res_writer = csv.writer(actual_results, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
