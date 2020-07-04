@@ -1,28 +1,20 @@
 from contextlib import contextmanager
+from parser import cd
+from parser import parse_results, fill_csv
 import os
 import subprocess
 import logging
 
-@contextmanager
-def cd(newdir):
-    prevdir = os.getcwd()
-    os.chdir(os.path.expanduser(newdir))
-    try:
-        yield
-    finally:
-        os.chdir(prevdir)
-
 def main():
     with cd(os.getcwd() + "/testcode"):
         try:
-            files = [f for f in os.listdir('.') if os.path.isfile(f)]
-            for f in files:
-                name, ext = os.path.splitext(f)
-                if ext == '.java':
-                    subprocess.call("infer --quandary-only -- javac " + f)
+            subprocess.call("mvn clean && infer --quandary-only -- mvn install", shell=True)
         except Exception:
             print("cannot enter dir")
             return
+        results = parse_results("/infer-out")
+    fill_csv("/csv/actual", results)
+    return
 
 if __name__ == '__main__':
     main()
