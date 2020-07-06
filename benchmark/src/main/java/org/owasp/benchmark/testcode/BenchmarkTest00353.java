@@ -86,7 +86,7 @@ public class BenchmarkTest00353 extends HttpServlet {
 			    fw.write("secret_value=" + org.owasp.esapi.ESAPI.encoder().encodeForBase64(result, true) + "\n");
 			fw.close();
 			response.getWriter().println(
-"Sensitive value: '" + org.owasp.esapi.ESAPI.encoder().encodeForHTML(new String(input)) + "' encrypted and stored<br/>"
+""
 );
 
 			

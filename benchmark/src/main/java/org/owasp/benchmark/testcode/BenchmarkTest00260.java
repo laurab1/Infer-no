@@ -82,7 +82,7 @@ public class BenchmarkTest00260 extends HttpServlet {
 			    fw.write("secret_value=" + org.owasp.esapi.ESAPI.encoder().encodeForBase64(result, true) + "\n");
 			fw.close();
 			response.getWriter().println(
-"Sensitive value: '" + org.owasp.esapi.ESAPI.encoder().encodeForHTML(new String(input)) + "' encrypted and stored<br/>"
+""
 );
 
 		} catch (javax.crypto.IllegalBlockSizeException e) {
