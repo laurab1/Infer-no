@@ -105,17 +105,23 @@ class ConfusionMatrix:
         t = Texttable()
         t.add_rows(
             [['Vulnerability name', 'Relative Incorrect classification %', 'Absolute Incorrect classification %']])
-        for i in range(3):
-            k = self.fn_error_rank[i]
-            t.add_row([k[0], k[1], k[2] * 100 / self.FN])
+        try:
+            for i in range(3):
+                k = self.fn_error_rank[i]
+                t.add_row([k[0], k[1], k[2] * 100 / self.FN])
+        except Exception as e:
+            print("There aren't at least 3 false negative, congrats!")
         print(t.draw())
 
         print('\nTop 3 False Positive misclassification by Vulnerability type')
         t = Texttable()
         t.add_rows([['Vulnerability name', 'Incorrect classification %', 'Absolute Incorrect classification %']])
-        for i in range(3):
-            k = self.fp_error_rank[i]
-            t.add_row([k[0], k[1], k[2] * 100 / self.FP])
+        try:
+            for i in range(3):
+                k = self.fp_error_rank[i]
+                t.add_row([k[0], k[1], k[2] * 100 / self.FP])
+        except Exception as e:
+            print("There aren't at least 3 false negative, congrats!")
         print(t.draw())
 
         print('\nConfusion Matrix')
