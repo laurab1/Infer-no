@@ -1,15 +1,35 @@
 {
   "quandary-sources": [
     {
-      "procedure": "javax.servlet.http.Cookie*",
+      "procedure": "javax.servlet.http.HttpServletRequest.getQuery*",
       "kind": "PrivateData"
     },
     {
-      "procedure": "javax.servlet.http.HttpServletRequest*",
+      "procedure": "javax.servlet.http.HttpServletRequest.getHeader*",
       "kind": "PrivateData"
+    },
+    {
+      "procedure": "javax.servlet.http.HttpServletRequest.getParam*",
+      "kind": "PrivateData"
+    },
+    {
+      "procedure": "org.owasp.benchmark.helpers.SeparateClassRequest.getTheParameter*",
+      "kind": "SensibleData"
+    },
+    {
+      "procedure": "org.owasp.benchmark.helpers.SeparateClassRequest.getTheCookie*",
+      "kind": "Other"
+    },
+    {
+      "procedure": "java.util.Random*",
+      "kind": "Other"
     }
   ],
   "quandary-sinks": [
+    {
+      "procedure": "org.owasp.benchmark.helpers.Utils.printOSCommandResults*",
+      "kind": "Other"
+    },
     {
       "procedure": "java.io.FileInputStream",
       "kind": "Other"
@@ -23,33 +43,69 @@
       "kind": "Other"
     },
     {
-      "procedure": "*query*",
+      "procedure": ".*Search*",
       "kind": "Other"
     },
     {
-      "procedure": "*search*",
+      "procedure": "java.sql.Connection*",
       "kind": "Other"
     },
     {
-      "procedure": "org.owasp.benchmark.helpers*",
+      "procedure": "org.owasp.benchmark.helpers.Expression*",
+      "kind": "Other"
+    },
+    {
+      "procedure": "org.owasp.benchmark.helpers.LDAP*",
+      "kind": "Other"
+    },
+    {
+      "procedure": "javax.servlet.http.HttpServletResponse*",
+      "kind": "Other"
+    },
+    {
+      "procedure": "javax.servlet.http.HttpSession.set*",
+      "kind": "Other"
+    },
+    {
+      "procedure": "java.io.PrintWriter*",
+      "kind": "SensibleData"
+    },
+    {
+      "procedure": "*.ProcessBuilder",
+      "kind": "Other"
+    },
+    {
+      "procedure": "javax.servlet.http.HttpSession.put*",
       "kind": "Other"
     }
   ],
   "quandary-sanitizers": [
     {
-      "procedure": "java.security*",
-      "kind": "Other"
+      "procedure": "org.owasp.esapi.reference.DefaultEncoder.decodeForHTML"
     },
     {
-      "procedure": "org.owasp.esapi.ESAPI.encoder*",
-      "kind": "Other"
+      "procedure": "org.owasp.esapi.reference.DefaultEncoder.decodeFromBase64"
     },
     {
-      "procedure": "org.owasp.esapi.ESAPI.decoder*",
-      "kind": "Other"
+      "procedure": "org.owasp.esapi.reference.DefaultEncoder.decodeFromURL"
+    },
+    {
+      "procedure": "org.owasp.esapi.reference.DefaultEncoder.canonicalize"
+    },
+    {
+      "procedure": "org.owasp.esapi.reference.DefaultEncoder.encodeForHTML"
+    },
+    {
+      "procedure": "java.security.SecureRandom*"
+    },
+    {
+      "procedure": "javax.crypto.Cipher*"
+    },
+    {
+      "procedure": "*.security.crypto.core.SHA*"
+    },
+    {
+      "procedure": "java.security.MessageDigest*"
     }
-  ],
-  "quandary-endpoints": [
-    "java.io*"
   ]
 }

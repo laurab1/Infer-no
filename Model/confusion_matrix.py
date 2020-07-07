@@ -92,31 +92,36 @@ class ConfusionMatrix:
         def percentage(name, val):
             return val * 100 / self.vulnerability_tested_counter[name]
 
-        self.fn_error_rank = {k: [percentage(k, v),v] for k, v in
-                              sorted(fn_ledger.items(), key=lambda item: percentage(item[0], item[1]), reverse=True)}
-        self.fp_error_rank = {k: [percentage(k, v),v] for k, v in
-                              sorted(fp_ledger.items(), key=lambda item: percentage(item[0], item[1]), reverse=True)}
+        self.fn_error_rank = [[k, percentage(k, v), v] for k, v in
+                              sorted(fn_ledger.items(), key=lambda item: percentage(item[0], item[1]), reverse=True)]
+        self.fp_error_rank = [[k, percentage(k, v), v] for k, v in
+                              sorted(fp_ledger.items(), key=lambda item: percentage(item[0], item[1]), reverse=True)]
 
     def pretty_print(self):
         # print the confusion matrix and statistics on std_out
         print('\nResults: \n')
 
         print('Top 3 False Negative misclassification by Vulnerability type')
-        fn_iter = iter(self.fn_error_rank)
         t = Texttable()
-        t.add_rows([['Vulnerability name', 'Relative Incorrect classification %', 'Absolute Incorrect classification %']])
-        for i in range(3):
-            k = next(fn_iter)
-            t.add_row([k, self.fn_error_rank[k][0], self.fn_error_rank[k][1]*100/self.FN])
+        t.add_rows(
+            [['Vulnerability name', 'Relative Incorrect classification %', 'Absolute Incorrect classification %']])
+        try:
+            for i in range(3):
+                k = self.fn_error_rank[i]
+                t.add_row([k[0], k[1], k[2] * 100 / self.FN])
+        except Exception as e:
+            print("There aren't at least 3 false negative, congrats!")
         print(t.draw())
 
         print('\nTop 3 False Positive misclassification by Vulnerability type')
-        fp_iter = iter(self.fp_error_rank)
         t = Texttable()
         t.add_rows([['Vulnerability name', 'Incorrect classification %', 'Absolute Incorrect classification %']])
-        for i in range(3):
-            k = next(fp_iter)
-            t.add_row([k, self.fp_error_rank[k][0], self.fp_error_rank[k][1]*100/self.FP])
+        try:
+            for i in range(3):
+                k = self.fp_error_rank[i]
+                t.add_row([k[0], k[1], k[2] * 100 / self.FP])
+        except Exception as e:
+            print("There aren't at least 3 false negative, congrats!")
         print(t.draw())
 
         print('\nConfusion Matrix')
