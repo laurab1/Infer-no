@@ -2,6 +2,16 @@
 
 \begin{document}
 
-Prova
+As said, we can set up Quandary in such a way that it can perform several tests on tainted input, and check wether they are sanitized or not, by defining a JSON configuration file. We run Quandary on the benchmark several times: as the first run didn't show any issue, thus scoring 0, the very last configuration obtained a score of $29.4$. \\
+This value is still not satisfactory in absolute terms, hence it deserves to be analyzed deeper, in order to see if such a bad result is due to inherent limitations of Quandary or if we can refine the configuration furhter. \\
+Looking at the benchmark results, we can get the list of the vulnerabilites which appear to be reported as false negative or false positive. Let us take as a main example secure cookie: this appear to be in the top three both as a false positive and as a false negative. Indeed, as we set up the sanitizers, we can only specify the name of some classes which will be accepted as sanitizers. What Quandary checks is if the tainted input is treated somewhere by one of these classes. \\
+However, there are two cases which can be misleading:
+\begin{itemize}
+	\item The cookie pass through a sanitizer, but the algorithm used is not secure. In this 
+	case, Quandary will not recognize a vulnerability (false negative);
+	\item The cookie does not pass through a sanitizer, but it does not contain sensible data.
+	Quandary will report this as a vulnerability, hence giving a false positive.
+\end{itemize}
+This is due to a limitation in the Quandary configuration: as said, we can only specify a sanitizer class, whithout checking any of its parameters or properties. This obviously limits the possibility of checking that the sanitizing procedure is effective, then affecting the results.
 
 \end{document}
