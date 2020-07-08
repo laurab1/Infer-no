@@ -2,7 +2,7 @@
 
 \begin{document}
 
-As said, we can set up Quandary in such a way that it can perform several tests on tainted input, and check whether they are sanitized or not, by defining a JSON configuration file. We run Quandary on the benchmark several times: as the first run didn't show any issue, thus scoring 0, the very last configuration obtained a score of $29.4$ [Fig. ~\ref{table:confusionmatrix}]. 
+As said, we can set up Quandary in such a way that it can perform several tests on tainted input, and check whether they are sanitized or not, by defining a JSON configuration file. We run Quandary on the benchmark several times: as the first run didn't show any issue, thus scoring 0, the very last configuration obtained a score of $29.4$ [Fig. 2]. 
 This score has been obtained by iteratively upgrading the Infer's configuration file according to the analysis performed into the benchmark code. For each new sink, source or sanitiser discovered, the configuration file has been updated.\\
 
 
@@ -34,7 +34,7 @@ This score has been obtained by iteratively upgrading the Infer's configuration 
 +---------------+-------------------+
 			\end{verbatim}
 		}
-	\label{table:confusionmatrix}
+	\label{img:confusionmatrix}
 	\caption{The Confusion Matrix}
 \end{figure}
 
@@ -70,10 +70,10 @@ Top 3 False Positive misclassification by Vulnerability type
 		}
 	\end{center}
 	\caption{Misclassification ranking}
-	\label{table:ranking}
+	\label{img:ranking}
 \end{figure}
 This is due to a limitation in the Quandary configuration, basically we can only specify a sanitizer class, withhout checking any of its parameters or properties. This obviously limits the possibility of checking that the sanitizing procedure is effective, then affecting the results. \\
-In order to better understand which are the main causes of the misclassifications, is possible to look at the benchmark's vulnerability ranking generated as a result of the analysis [Fig.~\ref{table:ranking}]. From these ranking, we can get the list of the vulnerabilities which appears to be reported more frequently as false negative or false positive. 
+In order to better understand which are the main causes of the misclassifications, is possible to look at the benchmark's vulnerability ranking generated as a result of the analysis [Fig.~\ref{img:ranking}]. From these ranking, we can get the list of the vulnerabilities which appears to be reported more frequently as false negative or false positive. 
 \subsection{Securecookie}
 Let's begin with the analysis of the secure cookie vulnerability, classified as CWE-614. This vulnerability must be reported when 
 
