@@ -2,16 +2,121 @@
 
 \begin{document}
 
-As said, we can set up Quandary in such a way that it can perform several tests on tainted input, and check wether they are sanitized or not, by defining a JSON configuration file. We run Quandary on the benchmark several times: as the first run didn't show any issue, thus scoring 0, the very last configuration obtained a score of $29.4$. \\
-This value is still not satisfactory in absolute terms, hence it deserves to be analyzed deeper, in order to see if such a bad result is due to inherent limitations of Quandary or if we can refine the configuration furhter. \\
-Looking at the benchmark results, we can get the list of the vulnerabilites which appear to be reported as false negative or false positive. Let us take as a main example secure cookie: this appear to be in the top three both as a false positive and as a false negative. Indeed, as we set up the sanitizers, we can only specify the name of some classes which will be accepted as sanitizers. What Quandary checks is if the tainted input is treated somewhere by one of these classes. \\
+As said, we can set up Quandary in such a way that it can perform several tests on tainted input, and check whether they are sanitized or not, by defining a JSON configuration file. We run Quandary on the benchmark several times: as the first run didn't show any issue, thus scoring 0, the very last configuration obtained a score of $29.4$ [Fig. ~\ref{table:confusionmatrix}]. 
+This score has been obtained by iteratively upgrading the Infer's configuration file according to the analysis performed into the benchmark code. For each new sink, source or sanitiser discovered, the configuration file has been updated.\\
+
+
+\begin{figure}
+		\small{
+			\begin{verbatim}
++------------------+----------+----------+
+|                  | Positive | Negative |
++==================+==========+==========+
+| Total Population | 1415     | 1325     |
++------------------+----------+----------+
++------------+--------------------+--------------------+
+|            | Condition Positive | Condition Negative |
++============+====================+====================+
+| Predicted  | 1136               | 674                |
+| Condition  |                    |                    |
+| Positive   |                    |                    |
++------------+--------------------+--------------------+
+| Predicted  | 279                | 651                |
+| Condition  |                    |                    |
+| Negative   |                    |                    |
++------------+--------------------+--------------------+
++---------------+-------------------+
+| Final Score:  | 29.41476098406559 |
++===============+===================+
+| Sensitivity:  | 0.803             |
++---------------+-------------------+
+| Specificity:  | 0.491             |
++---------------+-------------------+
+			\end{verbatim}
+		}
+	\label{table:confusionmatrix}
+	\caption{The Confusion Matrix}
+\end{figure}
+
+This value is still not satisfactory in absolute terms, hence it deserves to be analyzed deeper, in order to see if such a bad result is due to inherent limitations of Quandary or if we can refine the configuration further. First of all is important to notice that the number of correctly discovered vulnerabilities is high with respect to the undetected vulnerabilities, namely the false negative. What actually made the final score to drop significantly are the cases where a vulnerability has been detected erroneously.\\
+
+\begin{figure}
+	\begin{center}
+		\footnotesize{\begin{verbatim}
+	Top 3 False Negative misclassification by Vulnerability type
++--------------------+----------------------------+----------------------------+
+| Vulnerability name |     Relative Incorrect     |     Absolute Incorrect     |
+|                    |      classification %      |      classification %      |
++====================+============================+============================+
+| crypto             | 52.846                     | 46.595                     |
++--------------------+----------------------------+----------------------------+
+| hash               | 12.712                     | 10.753                     |
++--------------------+----------------------------+----------------------------+
+| securecookie       | 11.940                     | 2.867                      |
++--------------------+----------------------------+----------------------------+
+
+Top 3 False Positive misclassification by Vulnerability type
++--------------------+----------------------------+----------------------------+
+| Vulnerability name | Incorrect classification % |     Absolute Incorrect     |
+|                    |                            |      classification %      |
++====================+============================+============================+
+| securecookie       | 37.313                     | 3.709                      |
++--------------------+----------------------------+----------------------------+
+| hash               | 33.051                     | 11.573                     |
++--------------------+----------------------------+----------------------------+
+| cmdi               | 32.271                     | 12.018                     |
++--------------------+----------------------------+----------------------------+
+			\end{verbatim}
+		}
+	\end{center}
+	\caption{Misclassification ranking}
+	\label{table:ranking}
+\end{figure}
+This is due to a limitation in the Quandary configuration, basically we can only specify a sanitizer class, withhout checking any of its parameters or properties. This obviously limits the possibility of checking that the sanitizing procedure is effective, then affecting the results. \\
+In order to better understand which are the main causes of the misclassifications, is possible to look at the benchmark's vulnerability ranking generated as a result of the analysis [Fig.~\ref{table:ranking}]. From these ranking, we can get the list of the vulnerabilities which appears to be reported more frequently as false negative or false positive. 
+\subsection{Securecookie}
+Let's begin with the analysis of the secure cookie vulnerability, classified as CWE-614. This vulnerability must be reported when 
+
+	\begin{quote}"The Secure attribute for sensitive cookies in HTTPS sessions is not set, which could cause the user agent to send those cookies in plaintext over an HTTP session." \footnote{https://cwe.mitre.org/data/definitions/614.html}\end{quote}
+	
+This appears to be in the top three both as a false positive and as a false negative. Indeed, as we set up the sanitizers, we can only specify the name of some classes which will be accepted as sanitizers. What Quandary checks is if the tainted input is treated somewhere by one of these classes. \\
 However, there are two cases which can be misleading:
 \begin{itemize}
-	\item The cookie pass through a sanitizer, but the algorithm used is not secure. In this 
+	\item The cookie data pass through a sanitizer, but the cookie hasn't the secure flag activated. In this 
 	case, Quandary will not recognize a vulnerability (false negative);
-	\item The cookie does not pass through a sanitizer, but it does not contain sensible data.
+	\item The cookie data does not pass through a sanitizer, but the secure flag of the cookie is activated.
 	Quandary will report this as a vulnerability, hence giving a false positive.
 \end{itemize}
-This is due to a limitation in the Quandary configuration: as said, we can only specify a sanitizer class, whithout checking any of its parameters or properties. This obviously limits the possibility of checking that the sanitizing procedure is effective, then affecting the results.
 
+\subsection{Hash}
+
+The reversible one-way hash vulnerability CWE-328 happens when: 
+
+	\begin{quote}
+		"The product uses a hashing algorithm that produces a hash value that can be used to determine the original input, or to find an input that can produce the same hash, more efficiently than brute force techniques."
+		\footnote{https://cwe.mitre.org/data/definitions/328.html}
+	\end{quote}
+
+The algorithm used for the hashing is a parameter that must be set to the MessageDigest class. Even if a list of the vulnerable hashing algorithm does exist, it is impossible from the quandary configuration file to discriminate a class from its internal state. In fact, the only possible configuration is the one where it's implied that the update method of a MessageDigest class is a sanitizer, even though it could use an insecure hashing algorithm. This lead to a high number of false negative, because even if an input is going trough an insecure hash function, it's classified as sanitized. There are also a lot of false positive classifications for this vulnerability. For what we were able to analyse, mostly they are due to the fact that the benchmark logs back to the controller the un-hashed input value, this is recognised from the actual configuration as an attempt to expose sensitive data.  \\
+
+\subsection{Crypto}
+
+The benchmark code can be affected from the CWE-327 because
+
+\begin{quote}
+	"The use of a broken or risky cryptographic algorithm is an unnecessary risk that may result in the exposure of sensitive information."\footnote{https://cwe.mitre.org/data/definitions/327.html}
+\end{quote}
+
+In particular, several times inside the benchmark code is possible to find out the use of insecure algorithms for the KeyGenerator class. Once again, as for the CWE-328, it's not possible to discriminate a sanitizer from his internal state and this leads to a high number of false negative since as a default choice all the crypto algorithms are considered secure. 
+\subsection{Cmdi}
+
+This weakness, classified as CWE-78, occurs when
+
+\begin{quote}
+ "The software constructs all or part of an OS command using externally-influenced input from an upstream component, but it does not neutralize or incorrectly neutralizes special elements that could modify the intended OS command when it is sent to a downstream component."\footnote{https://cwe.mitre.org/data/definitions/78.html}	
+\end{quote}
+
+Since there is no a priori possibility of defining which are the secure OS commands that can be run without the need of a sanitized input, all the attempts of running an OS command using a tainted input, are reported as potential vulnerabilities. It's possible to observe from the results above that this assumption had an impact on almost the 12\% of the false positive classification.\\
+
+\clearpage
 \end{document}
