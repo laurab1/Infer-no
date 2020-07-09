@@ -10,6 +10,8 @@ Bemnchmark suite for infer Quandary
 
 ## Setup
 
+First of all you must [install Infer](https://fbinfer.com/docs/next/getting-started)
+
 To install the project simply run
 `python setup.py install`
 
