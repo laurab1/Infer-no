@@ -2,14 +2,15 @@
 
 \begin{document}
 
-This project is composed of a set of Python scripts that run the benchmark, analyse the results and create the confusion matrix along with some statistics. 
+This project is composed by a set of Python scripts that run the benchmark, analyse the results and create the confusion matrix along with some statistics. 
 The generation of the final results can be accomplished in 2 steps running the following scripts:
 
 \begin{enumerate}
-	\item \texttt{run\_test.py} Runs the Maven compilation of the benchmark together with the
+	\item \texttt{run\_test.py} runs the Maven compilation of the benchmark together with the
 	Infer quandary tool and exports the results. Note that Infer is launched with the option
 	--quandary-only, thus the results are all and only those obtained by the Quandary plugin. 
-	\item \texttt{confusion\_builder.py} For each exported result from the previous step, prints statistics and the confusion matrix.
+	\item \texttt{confusion\_builder.py} for each exported result from the previous step,
+	prints statistics and builds the confusion matrix.
 \end{enumerate}
 
 \subsection{Custom Infer configurations}
@@ -25,9 +26,10 @@ We declare as sanitizers the following procedures:
 	procedure defined in the java.security framework;
 	\item encryption using SHA is always considered to be a sanitizer. Note that, as we have
 	no way to specify which SHA algorithm are going to use, Quandary is not able to report
-	a vulnerabilty caused by the usage of an unsecure algortihm, as for instance SHA1: more
-	on this later on. A similar consideration can be done for the last sanitizer, the 
-	\emph{MessageDigest} procedure defined in java.security.
+	a vulnerabilty caused by the usage of an unsecure algortihm, as for instance SHA1.
+	A similar consideration can be done for the last sanitizer, the 
+	\emph{MessageDigest} procedure defined in java.security: more
+	on this later on.
 \end{itemize}
 In order to run the test with a different configuration it is only needed to edit this configuration file and run again the tool as descrived above.
 
@@ -51,7 +53,7 @@ The structure of the file is shown in fig.~\ref{img:csv}.
 	\label{img:csv}
 \end{figure}
 
-Note that, as the vulnerability name and CWE number are not useful for the analysis, we basically ignore them when building the results csv.
+Note that, as the vulnerability name and CWE number are not useful for the analysis, we fill this fields with dummy values which will be ignored while building the results csv.
 In order to compare different results from different configurations of the Quandary tool and assess the results, it is possible to rename this file and run again the script: the new configuration is automatically recognized by Quandary. In this case, a new \texttt{csv/actual/actual.csv} file will be generated and the old one won't be overwritten. As the confusion matrix builder can build up the matrix for different csv files, running again the script will results in getting separate statistics according to all the \texttt{.csv} files placed inside the \texttt{csv/actual} folder, hence easing the comparison between different configurations.
 
 \end{document}

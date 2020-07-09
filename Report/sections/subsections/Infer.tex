@@ -2,7 +2,7 @@
 
 \begin{document}
 
-Facebook Infer is an open source static code analyser written in OCaml. Based on abstract interpretation, it is not primarly intended to be used to discover security issues but, more generally, possible errors in the source code. This obviously means that it can shows several limitations for this kind of purpose: however, it seems interesting to test it against the Owasp benchmark, in order to see how can it be used and improved for security. \\
+Facebook Infer is an open source static code analyser written in OCaml. Based on abstract interpretation, it is not primarly intended to be used to discover security issues but, more generally, possible errors in the source code. This obviously means that it can shows several limitations for the former kind of purpose: however, it seems interesting to test it against the Owasp benchmark, in order to see how can it be used and improved for security. \\
 Infer is provided with a plugin, namely Quandary, devoted to the taint analysis of the source code. Quandary can be configured by providing a JSON file, where one can define:
 \begin{itemize}
 	\item a list of sources for the input data;
@@ -10,5 +10,5 @@ Infer is provided with a plugin, namely Quandary, devoted to the taint analysis 
 	\item a list of sanitizer procedures;
 	\item a list of endpoints.
 \end{itemize}
-As the OWASP benchmark is a web application, tainted inputs come from servlet procedures, which are not included in the Quandary configuration by default. This means that, at a first run, Quandary got a score 0: in the next sections we are providing some configurations which can improve Infer Quandary's performances in a web environment.
+As the OWASP benchmark is a web application, tainted inputs come from servlet procedures, which are not included in the Quandary configuration by default. This means that, at a first run, Quandary got a score 0: in the next sections we are providing a configuration which can improve Infer Quandary's performances in a web environment.
 \end{document}
