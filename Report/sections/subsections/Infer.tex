@@ -2,8 +2,8 @@
 
 \begin{document}
 
-Facebook Infer is an open source static code analyser written in OCaml. Based on abstract interpretation, it is not primarly intended to be used to discover security issues but, more generally, possible errors in the source code. This obviously means that it can shows several limitations for the former kind of purpose: however, it seems interesting to test it against the Owasp benchmark, in order to see how can it be used and improved for security. \\
-Infer is provided with a plugin, namely Quandary, devoted to the taint analysis of the source code. Quandary can be configured by providing a JSON file, where one can define:
+Facebook Infer\footnote{https://fbinfer.com/} is an open source static code analyser written in OCaml. Based on abstract interpretation, it is not primarly intended to be used to discover security issues but, more generally, possible errors in the source code. This obviously means that it can shows several limitations for the former kind of purpose: however, it seems interesting to test it against the Owasp benchmark, in order to see how can it be used and improved for security. \\
+Infer is provided with a plugin, namely Quandary\footnote{https://fbinfer.com/docs/next/checker-quandary/}, devoted to the taint analysis of the source code. Quandary can be configured by providing a JSON file, where one can define:
 \begin{itemize}
 	\item a list of sources for the input data;
 	\item a list of sink procedures, which may use tainted inputs;
